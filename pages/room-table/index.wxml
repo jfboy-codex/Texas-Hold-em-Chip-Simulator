@@ -1,0 +1,42 @@
+<view class="page" wx:if="{{room}}">
+  <view class="card">
+    <view>房间 {{room.id}} | 底池 {{room.pot}}</view>
+    <view>轮到：{{room.players[room.currentTurn].nickName}}</view>
+    <view>阶段：{{room.stage}}</view>
+  </view>
+
+  <view class="players">
+    <view class="player card pixel" wx:for="{{room.players}}" wx:key="id" bindtap="onTapPlayer" data-player-id="{{item.id}}">
+      <image class="avatar" src="{{item.avatarUrl}}"></image>
+      <view>{{item.nickName}} (Seat {{item.seat}})</view>
+      <view>筹码：{{item.chips}}</view>
+      <view wx:if="{{item.folded}}">已弃牌</view>
+      <view wx:if="{{item.allIn}}">ALL-IN</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view>下注筹码（点击叠加）</view>
+    <view class="chip-row">
+      <button wx:for="{{chipOptions}}" wx:key="*this" data-chip="{{item}}" bindtap="onPickChip">+{{item}}</button>
+    </view>
+    <view>当前加注额：{{raiseAmount}}</view>
+    <view animation="{{chipAnimData}}" class="chip-anim">🪙</view>
+  </view>
+
+  <view class="card actions">
+    <button bindtap="onCheck">Check</button>
+    <button class="btn-warn" bindtap="onRaise">Raise</button>
+    <button bindtap="onFold">Fold</button>
+  </view>
+
+  <view class="card" wx:if="{{isOwner}}">
+    <view>房主结算：勾选赢家后分池</view>
+    <checkbox-group bindchange="onWinnerChange">
+      <label wx:for="{{room.players}}" wx:key="id" class="winner-item">
+        <checkbox value="{{item.id}}" />{{item.nickName}}
+      </label>
+    </checkbox-group>
+    <button class="btn-primary" bindtap="onSettle">结算本局</button>
+  </view>
+</view>
