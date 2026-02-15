@@ -61,8 +61,11 @@ function createRoom({ owner, chipConfig, smallBlind, bigBlind }) {
     chips: initialChips,
     chipStacks: { ...normalizedChipConfig },
     invested: 0,
+    stageBet: 0,
     folded: false,
     allIn: false,
+    actedInStage: false,
+    position: 'normal',
     ready: false
   }];
 
@@ -78,6 +81,7 @@ function createRoom({ owner, chipConfig, smallBlind, bigBlind }) {
     pot: 0,
     currentTurn: 0,
     stage: 'preflop',
+    potChipStacks: { chip10: 0, chip20: 0, chip50: 0 },
     status: 'waiting',
     actions: [],
     createdAt: Date.now()
@@ -113,8 +117,11 @@ function joinRoom(roomId, user) {
       chips: initialChips,
       chipStacks: { ...chipConfig },
       invested: 0,
+      stageBet: 0,
       folded: false,
       allIn: false,
+      actedInStage: false,
+      position: 'normal',
       ready: false
     });
     saveRoom(room);
