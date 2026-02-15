@@ -40,3 +40,16 @@
 - `utils/poker.js#settleByWinners`：按获胜者分配主池/边池
   - 若出现 All-in，赢家收益由其可参与的池子封顶，不会超过等额可赢范围
 
+
+
+## CE-RJSSP 调度实验（新增）
+
+仓库新增了 `experiments/` 目录，用于复现实验方法中的 CE-RJSSP（可重入 + 柔性机台 + 多目标）调度实验与绘图。
+
+快速运行：
+
+```bash
+python experiments/run_experiments.py --num-instances 12 --jobs 10 --machines 10
+```
+
+结果会输出到 `experiments/results/`，包括策略对比、消融实验、泛化实验以及对应图表。
