@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/lobby/index",
+    "pages/room-create/index",
+    "pages/room-join/index",
+    "pages/room/index",
+    "pages/room-table/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "德州扑克筹码模拟器",
+    "navigationBarBackgroundColor": "#1a1a1a",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#101010",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

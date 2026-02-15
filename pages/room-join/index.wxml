@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="card">
+    <view>输入邀请码</view>
+    <input value="{{roomCode}}" bindinput="onCodeInput" />
+    <button class="btn-primary" bindtap="onJoin">加入</button>
+  </view>
+
+  <view class="card">
+    <view>或粘贴二维码文本（例如：holdem://join?room=ABC123）</view>
+    <input value="{{qrText}}" bindinput="onQrInput" />
+    <button bindtap="onJoinByQr">二维码加入</button>
+  </view>
+</view>

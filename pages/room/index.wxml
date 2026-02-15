@@ -1,0 +1,44 @@
+<view class="page" wx:if="{{room}}">
+  <view class="card">
+    <view>房间号：{{room.id}}</view>
+    <view>盲注：{{room.smallBlind}} / {{room.bigBlind}}</view>
+    <view>状态：{{room.status === 'waiting' ? '等待中' : '进行中'}}</view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <input class="nick-input" value="{{nickNameInput}}" bindinput="onNickInput" placeholder="修改昵称"/>
+      <button size="mini" bindtap="onUpdateNick">保存昵称</button>
+    </view>
+    <button size="mini" bindtap="toggleReady">{{myReady ? '取消准备' : '准备'}}</button>
+  </view>
+
+  <view class="card">
+    <view class="seat-title">席位（最多8人）</view>
+    <view class="seats">
+      <view class="seat" wx:for="{{seatList}}" wx:key="seat">
+        <view wx:if="{{item.player}}" class="seat-user">
+          <image class="avatar" src="{{item.player.avatarUrl}}"></image>
+          <view>{{item.player.nickName}}</view>
+          <view class="ready {{item.player.ready ? 'on' : 'off'}}">{{item.player.ready ? '已准备' : '未准备'}}</view>
+        </view>
+        <button wx:else class="seat-empty" open-type="share" data-seat="{{item.seat}}">＋</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <button bindtap="showQr">扫码加入</button>
+    <view wx:if="{{qrVisible}}" class="qr-wrap">
+      <view>微信扫码加入房间</view>
+      <image class="qr" src="{{qrImageUrl}}" mode="aspectFit"></image>
+      <view class="hint">{{inviteText}}</view>
+      <button size="mini" bindtap="hideQr">关闭</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{isOwner}}">
+    <view>全部成员准备后可进入牌桌</view>
+    <button class="btn-primary" bindtap="goTable" disabled="{{!canStart}}">进入牌桌</button>
+  </view>
+</view>

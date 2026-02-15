@@ -1,0 +1,12 @@
+<view class="page">
+  <view class="card pixel">
+    <text class="title">德州扑克筹码模拟器</text>
+    <button class="btn-primary" bindtap="onWxLogin">微信登录并读取头像昵称</button>
+  </view>
+
+  <view class="card" wx:if="{{user}}">
+    <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"/>
+    <text>{{user.nickName}}</text>
+    <button class="btn-primary" bindtap="goLobby">进入大厅</button>
+  </view>
+</view>

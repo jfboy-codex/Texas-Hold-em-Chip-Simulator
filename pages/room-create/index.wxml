@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="card">
+    <view>初始筹码</view>
+    <input type="number" value="{{initialChips}}" bindinput="onInitialChips"/>
+
+    <view>小盲</view>
+    <input type="number" value="{{smallBlind}}" bindinput="onSmallBlind"/>
+
+    <view>大盲</view>
+    <input type="number" value="{{bigBlind}}" bindinput="onBigBlind"/>
+
+    <button class="btn-primary" bindtap="onCreateRoom">创建房间</button>
+  </view>
+</view>
