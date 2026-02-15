@@ -8,7 +8,7 @@ function nextActivePlayerIndex(players, from) {
   return from;
 }
 
-function applyAction(room, playerId, action, amount = 0) {
+function applyAction(room, playerId, action, amount = 0, chipSpend = null) {
   const idx = room.players.findIndex((p) => p.id === playerId);
   if (idx < 0) return room;
 
@@ -25,6 +25,13 @@ function applyAction(room, playerId, action, amount = 0) {
 
   if (action === 'raise') {
     const realAmount = Math.max(0, Math.min(amount, player.chips));
+    const stacks = player.chipStacks || { chip10: 0, chip20: 0, chip50: 0 };
+    const spend = chipSpend || { chip10: 0, chip20: 0, chip50: 0 };
+    player.chipStacks = {
+      chip10: Math.max(0, (stacks.chip10 || 0) - (spend.chip10 || 0)),
+      chip20: Math.max(0, (stacks.chip20 || 0) - (spend.chip20 || 0)),
+      chip50: Math.max(0, (stacks.chip50 || 0) - (spend.chip50 || 0))
+    };
     player.chips -= realAmount;
     player.invested += realAmount;
     room.pot += realAmount;

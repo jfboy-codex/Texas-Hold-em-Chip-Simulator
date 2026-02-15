@@ -1,7 +1,21 @@
 <view class="page">
   <view class="card">
-    <view>初始筹码</view>
-    <input type="number" value="{{initialChips}}" bindinput="onInitialChips"/>
+    <view class="title">起始筹码配置（每位玩家）</view>
+
+    <view>10筹码数量（黄色）</view>
+    <input type="number" value="{{chip10}}" bindinput="onChip10Input"/>
+
+    <view>20筹码数量（绿色）</view>
+    <input type="number" value="{{chip20}}" bindinput="onChip20Input"/>
+
+    <view>50筹码数量（蓝色）</view>
+    <input type="number" value="{{chip50}}" bindinput="onChip50Input"/>
+
+    <view class="chips-preview">
+      <view class="chip chip-10">10 x {{chip10}}</view>
+      <view class="chip chip-20">20 x {{chip20}}</view>
+      <view class="chip chip-50">50 x {{chip50}}</view>
+    </view>
 
     <view>小盲</view>
     <input type="number" value="{{smallBlind}}" bindinput="onSmallBlind"/>

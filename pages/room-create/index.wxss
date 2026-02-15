@@ -1,3 +1,9 @@
 .page { padding: 24rpx; }
 input, textarea { background:#2a2a2a; margin: 12rpx 0 20rpx; padding: 12rpx; border-radius: 8rpx; }
 textarea { min-height: 140rpx; }
+.title { font-weight: 600; margin-bottom: 12rpx; }
+.chips-preview { display: flex; flex-wrap: wrap; gap: 12rpx; margin-bottom: 20rpx; }
+.chip { padding: 8rpx 12rpx; border-radius: 999rpx; color: #fff; font-size: 24rpx; }
+.chip-10 { background: #f4c430; color: #222; }
+.chip-20 { background: #35b24a; }
+.chip-50 { background: #3c7df0; }

@@ -10,6 +10,11 @@
       <image class="avatar" src="{{item.avatarUrl}}"></image>
       <view>{{item.nickName}} (Seat {{item.seat}})</view>
       <view>筹码：{{item.chips}}</view>
+      <view class="stack-row">
+        <text class="chip chip-10">10: {{(item.chipStacks && item.chipStacks.chip10) || 0}}</text>
+        <text class="chip chip-20">20: {{(item.chipStacks && item.chipStacks.chip20) || 0}}</text>
+        <text class="chip chip-50">50: {{(item.chipStacks && item.chipStacks.chip50) || 0}}</text>
+      </view>
       <view wx:if="{{item.folded}}">已弃牌</view>
       <view wx:if="{{item.allIn}}">ALL-IN</view>
     </view>
@@ -18,9 +23,18 @@
   <view class="card">
     <view>下注筹码（点击叠加）</view>
     <view class="chip-row">
-      <button wx:for="{{chipOptions}}" wx:key="*this" data-chip="{{item}}" bindtap="onPickChip">+{{item}}</button>
+      <button
+        wx:for="{{chipOptions}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onPickChip"
+        class="{{item.colorClass}}">
+        +{{item.label}}（余 {{item.remain}}）
+      </button>
     </view>
     <view>当前加注额：{{raiseAmount}}</view>
+    <view class="picked">已选：10x{{pickedChips.chip10}} / 20x{{pickedChips.chip20}} / 50x{{pickedChips.chip50}}</view>
+    <button size="mini" bindtap="onResetPick">清空已选筹码</button>
     <view animation="{{chipAnimData}}" class="chip-anim">🪙</view>
   </view>
 
