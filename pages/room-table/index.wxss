@@ -1,6 +1,7 @@
 .page { padding: 20rpx; }
 .players { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; }
 .player { min-height: 180rpx; }
+.player-current { border: 2rpx solid #ffd34d; box-shadow: 0 0 18rpx rgba(255, 211, 77, 0.35); }
 .avatar { width: 70rpx; height: 70rpx; border-radius: 35rpx; }
 .chip-row { display:flex; flex-wrap:wrap; gap: 10rpx; margin: 12rpx 0; }
 .chip-anim { width: 80rpx; height: 80rpx; line-height: 80rpx; text-align: center; font-size: 52rpx; }
@@ -12,3 +13,8 @@
 .chip-20 { background: #35b24a; }
 .chip-50 { background: #3c7df0; }
 .picked { margin: 6rpx 0 10rpx; font-size: 24rpx; color: #ddd; }
+.table-overview { margin-bottom: 12rpx; }
+.overview-title { font-weight: 600; margin-bottom: 8rpx; }
+.overview-pot { margin-bottom: 8rpx; }
+.overview-row { display: flex; justify-content: space-between; margin-bottom: 6rpx; }
+.fold-mark { color: #ff4d4f; font-weight: 700; }

@@ -14,35 +14,81 @@ function buildChipOptions(player) {
   ];
 }
 
-function addAmountToChipStacks(chipStacks, amount) {
-  const next = {
-    chip10: chipStacks.chip10 || 0,
-    chip20: chipStacks.chip20 || 0,
-    chip50: chipStacks.chip50 || 0
+function normalizeStacks(stacks = {}) {
+  return {
+    chip10: Math.max(0, Number(stacks.chip10 || 0)),
+    chip20: Math.max(0, Number(stacks.chip20 || 0)),
+    chip50: Math.max(0, Number(stacks.chip50 || 0))
   };
+}
 
-  let rest = Math.max(0, Number(amount || 0));
-  if (rest >= 50) {
-    const count50 = Math.floor(rest / 50);
-    next.chip50 += count50;
-    rest -= count50 * 50;
-  }
-  if (rest >= 20) {
-    const count20 = Math.floor(rest / 20);
-    next.chip20 += count20;
-    rest -= count20 * 20;
-  }
-  if (rest >= 10) {
-    const count10 = Math.floor(rest / 10);
-    next.chip10 += count10;
-    rest -= count10 * 10;
-  }
-  return next;
+function buildPlayerViews(room) {
+  if (!room) return [];
+  const current = room.players[room.currentTurn] ? room.players[room.currentTurn].id : '';
+  return room.players.map((p) => {
+    let positionLabel = '普通位';
+    if (p.position === 'small_blind') positionLabel = '小盲';
+    if (p.position === 'big_blind') positionLabel = '大盲';
+    return {
+      ...p,
+      isCurrent: p.id === current,
+      positionLabel
+    };
+  });
+}
+
+function distributeFromPot(potStacks, payoutMap, winnerIds) {
+  const pool = normalizeStacks(potStacks);
+  const result = {};
+  winnerIds.forEach((id) => {
+    result[id] = { chip10: 0, chip20: 0, chip50: 0 };
+  });
+
+  const order = ['chip50', 'chip20', 'chip10'];
+  winnerIds.forEach((id) => {
+    let target = Math.max(0, Number(payoutMap[id] || 0));
+    order.forEach((key) => {
+      const value = key === 'chip50' ? 50 : (key === 'chip20' ? 20 : 10);
+      if (target < value || pool[key] <= 0) return;
+      const need = Math.floor(target / value);
+      const take = Math.min(need, pool[key]);
+      if (take <= 0) return;
+      result[id][key] += take;
+      pool[key] -= take;
+      target -= take * value;
+    });
+  });
+
+  // 兜底：尽量补齐剩余面额（应当很少发生）
+  winnerIds.forEach((id) => {
+    let current = result[id].chip10 * 10 + result[id].chip20 * 20 + result[id].chip50 * 50;
+    let target = Math.max(0, Number(payoutMap[id] || 0));
+    while (current < target) {
+      if (pool.chip10 > 0 && current + 10 <= target) {
+        pool.chip10 -= 1;
+        result[id].chip10 += 1;
+        current += 10;
+      } else if (pool.chip20 > 0 && current + 20 <= target) {
+        pool.chip20 -= 1;
+        result[id].chip20 += 1;
+        current += 20;
+      } else if (pool.chip50 > 0 && current + 50 <= target) {
+        pool.chip50 -= 1;
+        result[id].chip50 += 1;
+        current += 50;
+      } else {
+        break;
+      }
+    }
+  });
+
+  return result;
 }
 
 Page({
   data: {
     room: null,
+    playerViews: [],
     chipOptions: [],
     pickedChips: { chip10: 0, chip20: 0, chip50: 0 },
     raiseAmount: 0,
@@ -63,6 +109,7 @@ Page({
     const me = room && user ? room.players.find((p) => p.id === user.id) : null;
     this.setData({
       room,
+      playerViews: buildPlayerViews(room),
       chipOptions: buildChipOptions(me),
       isOwner: !!(room && user && room.ownerId === user.id)
     });
@@ -79,6 +126,7 @@ Page({
     const me = room && user ? room.players.find((p) => p.id === user.id) : null;
     this.setData({
       room,
+      playerViews: buildPlayerViews(room),
       chipOptions: buildChipOptions(me)
     });
   },
@@ -177,15 +225,24 @@ Page({
     }
 
     const payout = settleByWinners(room.players, winners);
+    const payoutChips = distributeFromPot(room.potChipStacks || {}, payout, winners);
     room.players = room.players.map((p) => ({
       ...p,
       chips: p.chips + (payout[p.id] || 0),
-      chipStacks: addAmountToChipStacks(p.chipStacks || {}, payout[p.id] || 0),
+      chipStacks: {
+        chip10: ((p.chipStacks && p.chipStacks.chip10) || 0) + ((payoutChips[p.id] && payoutChips[p.id].chip10) || 0),
+        chip20: ((p.chipStacks && p.chipStacks.chip20) || 0) + ((payoutChips[p.id] && payoutChips[p.id].chip20) || 0),
+        chip50: ((p.chipStacks && p.chipStacks.chip50) || 0) + ((payoutChips[p.id] && payoutChips[p.id].chip50) || 0)
+      },
       invested: 0,
+      stageBet: 0,
       folded: false,
-      allIn: false
+      allIn: false,
+      actedInStage: false
     }));
     room.pot = 0;
+    room.potChipStacks = { chip10: 0, chip20: 0, chip50: 0 };
+    room.stage = 'preflop';
     room.actions.push({ type: 'settle', winners, payout, at: Date.now() });
 
     saveRoom(room);

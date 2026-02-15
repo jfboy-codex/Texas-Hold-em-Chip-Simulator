@@ -6,6 +6,7 @@ const {
   updateUserNickName,
   areAllPlayersReady
 } = require('../../utils/store');
+const { nextActivePlayerIndex } = require('../../utils/poker');
 
 function buildSeatList(room) {
   const list = [];
@@ -121,6 +122,25 @@ Page({
       return;
     }
 
+    const playerCount = room.players.length;
+    const smallBlindIndex = playerCount > 1 ? 0 : 0;
+    const bigBlindIndex = playerCount > 1 ? 1 : 0;
+
+    room.players = room.players.map((player, index) => ({
+      ...player,
+      invested: 0,
+      stageBet: 0,
+      folded: false,
+      allIn: false,
+      actedInStage: false,
+      position: index === smallBlindIndex ? 'small_blind' : (index === bigBlindIndex ? 'big_blind' : 'normal')
+    }));
+    room.smallBlindIndex = smallBlindIndex;
+    room.bigBlindIndex = bigBlindIndex;
+    room.currentTurn = nextActivePlayerIndex(room.players, bigBlindIndex);
+    room.stage = 'preflop';
+    room.pot = 0;
+    room.potChipStacks = { chip10: 0, chip20: 0, chip50: 0 };
     room.status = 'playing';
     room.actions.push({ type: 'start_game', at: Date.now() });
     saveRoom(room);

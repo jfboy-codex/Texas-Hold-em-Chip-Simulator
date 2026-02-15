@@ -5,10 +5,20 @@
     <view>阶段：{{room.stage}}</view>
   </view>
 
+  <view class="card table-overview">
+    <view class="overview-title">牌桌视图</view>
+    <view class="overview-pot">底池总额：{{room.pot}}</view>
+    <view class="overview-row" wx:for="{{playerViews}}" wx:key="id">
+      <text>{{item.nickName}}（{{item.positionLabel}}）</text>
+      <text>本轮下注：{{item.stageBet || 0}}</text>
+      <text wx:if="{{item.folded}}" class="fold-mark">✕</text>
+    </view>
+  </view>
+
   <view class="players">
-    <view class="player card pixel" wx:for="{{room.players}}" wx:key="id" bindtap="onTapPlayer" data-player-id="{{item.id}}">
+    <view class="player card pixel {{item.isCurrent ? 'player-current' : ''}}" wx:for="{{playerViews}}" wx:key="id" bindtap="onTapPlayer" data-player-id="{{item.id}}">
       <image class="avatar" src="{{item.avatarUrl}}"></image>
-      <view>{{item.nickName}} (Seat {{item.seat}})</view>
+      <view>{{item.nickName}} (Seat {{item.seat}} · {{item.positionLabel}})</view>
       <view>筹码：{{item.chips}}</view>
       <view class="stack-row">
         <text class="chip chip-10">10: {{(item.chipStacks && item.chipStacks.chip10) || 0}}</text>
