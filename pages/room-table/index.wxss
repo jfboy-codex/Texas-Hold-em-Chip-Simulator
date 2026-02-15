@@ -1,0 +1,8 @@
+.page { padding: 20rpx; }
+.players { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; }
+.player { min-height: 180rpx; }
+.avatar { width: 70rpx; height: 70rpx; border-radius: 35rpx; }
+.chip-row { display:flex; flex-wrap:wrap; gap: 10rpx; margin: 12rpx 0; }
+.chip-anim { width: 80rpx; height: 80rpx; line-height: 80rpx; text-align: center; font-size: 52rpx; }
+.actions button { margin-right: 12rpx; }
+.winner-item { display:block; margin-bottom: 8rpx; }

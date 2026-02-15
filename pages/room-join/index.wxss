@@ -1,0 +1,2 @@
+.page { padding: 24rpx; }
+input { background:#2a2a2a; margin: 12rpx 0 20rpx; padding: 12rpx; border-radius: 8rpx; }
