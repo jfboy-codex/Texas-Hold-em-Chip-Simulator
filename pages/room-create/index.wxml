@@ -9,16 +9,6 @@
     <view>大盲</view>
     <input type="number" value="{{bigBlind}}" bindinput="onBigBlind"/>
 
-    <view>玩家顺序（逗号分隔昵称）</view>
-    <textarea value="{{orderText}}" bindinput="onOrderText"/>
-
-    <button class="btn-primary" bindtap="onCreateRoom">创建</button>
-  </view>
-
-  <view class="card" wx:if="{{room}}">
-    <view>房间号：{{room.id}}</view>
-    <view>邀请码：{{room.id}}</view>
-    <view>二维码数据：holdem://join?room={{room.id}}</view>
-    <button bindtap="goRoom">进入房间</button>
+    <button class="btn-primary" bindtap="onCreateRoom">创建房间</button>
   </view>
 </view>

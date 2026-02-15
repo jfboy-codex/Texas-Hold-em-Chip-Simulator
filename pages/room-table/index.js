@@ -14,6 +14,11 @@ Page({
   onLoad(query) {
     const room = getRoom(query.roomId);
     const user = getUser();
+    if (room && room.status !== 'playing') {
+      wx.showToast({ title: '请先在房间内准备并开局', icon: 'none' });
+      wx.navigateBack();
+      return;
+    }
     this.setData({
       room,
       isOwner: !!(room && user && room.ownerId === user.id)

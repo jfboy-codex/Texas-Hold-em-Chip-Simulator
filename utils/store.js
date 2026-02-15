@@ -28,19 +28,28 @@ function getUser() {
   return wx.getStorageSync(USER_KEY) || null;
 }
 
-function createRoom({ owner, initialChips, smallBlind, bigBlind, orderedPlayers }) {
+function updateUserNickName(nickName) {
+  const user = getUser();
+  if (!user) return null;
+  const next = { ...user, nickName };
+  wx.setStorageSync(USER_KEY, next);
+  return next;
+}
+
+function createRoom({ owner, initialChips, smallBlind, bigBlind }) {
   const rooms = loadRooms();
   let code = generateRoomCode();
   while (rooms[code]) code = generateRoomCode();
 
-  const players = orderedPlayers.map((player, idx) => ({
-    ...player,
-    seat: idx + 1,
+  const players = [{
+    ...owner,
+    seat: 1,
     chips: initialChips,
     invested: 0,
     folded: false,
-    allIn: false
-  }));
+    allIn: false,
+    ready: false
+  }];
 
   const room = {
     id: code,
@@ -48,10 +57,12 @@ function createRoom({ owner, initialChips, smallBlind, bigBlind, orderedPlayers 
     initialChips,
     smallBlind,
     bigBlind,
+    maxSeats: 8,
     players,
     pot: 0,
     currentTurn: 0,
     stage: 'preflop',
+    status: 'waiting',
     actions: [],
     createdAt: Date.now()
   };
@@ -77,13 +88,15 @@ function joinRoom(roomId, user) {
 
   const exists = room.players.find((p) => p.id === user.id);
   if (!exists) {
+    if (room.players.length >= room.maxSeats) return { error: 'FULL' };
     room.players.push({
       ...user,
       seat: room.players.length + 1,
       chips: room.initialChips,
       invested: 0,
       folded: false,
-      allIn: false
+      allIn: false,
+      ready: false
     });
     saveRoom(room);
   }
@@ -91,11 +104,26 @@ function joinRoom(roomId, user) {
   return room;
 }
 
+function updatePlayerInRoom(roomId, userId, patch) {
+  const room = getRoom(roomId);
+  if (!room) return null;
+  room.players = room.players.map((p) => (p.id === userId ? { ...p, ...patch } : p));
+  saveRoom(room);
+  return room;
+}
+
+function areAllPlayersReady(room) {
+  return room.players.length > 1 && room.players.every((p) => p.ready);
+}
+
 module.exports = {
   createUser,
   getUser,
+  updateUserNickName,
   createRoom,
   getRoom,
   saveRoom,
-  joinRoom
+  joinRoom,
+  updatePlayerInRoom,
+  areAllPlayersReady
 };

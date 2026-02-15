@@ -4,7 +4,11 @@ Page({
   data: { user: null },
 
   onShow() {
-    this.setData({ user: getUser() });
+    const user = getUser();
+    this.setData({ user });
+    if (user) {
+      wx.reLaunch({ url: '/pages/lobby/index' });
+    }
   },
 
   onWxLogin() {
@@ -14,15 +18,12 @@ Page({
         const user = createUser(res.userInfo);
         getApp().globalData.currentUser = user;
         this.setData({ user });
+        wx.reLaunch({ url: '/pages/lobby/index' });
       }
     });
   },
 
-  goCreate() {
-    wx.navigateTo({ url: '/pages/room-create/index' });
-  },
-
-  goJoin() {
-    wx.navigateTo({ url: '/pages/room-join/index' });
+  goLobby() {
+    wx.reLaunch({ url: '/pages/lobby/index' });
   }
 });

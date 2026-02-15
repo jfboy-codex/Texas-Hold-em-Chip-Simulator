@@ -1,0 +1,11 @@
+<view class="page" wx:if="{{user}}">
+  <view class="card">
+    <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"/>
+    <view>{{user.nickName}}</view>
+  </view>
+
+  <view class="card">
+    <button class="btn-primary" bindtap="goCreate">创建房间</button>
+    <button bindtap="goJoin">加入房间</button>
+  </view>
+</view>

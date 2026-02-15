@@ -1,8 +1,10 @@
 {
   "pages": [
     "pages/login/index",
+    "pages/lobby/index",
     "pages/room-create/index",
     "pages/room-join/index",
+    "pages/room/index",
     "pages/room-table/index"
   ],
   "window": {

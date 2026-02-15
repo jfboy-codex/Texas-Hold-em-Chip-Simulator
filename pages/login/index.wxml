@@ -7,7 +7,6 @@
   <view class="card" wx:if="{{user}}">
     <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"/>
     <text>{{user.nickName}}</text>
-    <button bindtap="goCreate">创建房间</button>
-    <button bindtap="goJoin">加入房间</button>
+    <button class="btn-primary" bindtap="goLobby">进入大厅</button>
   </view>
 </view>

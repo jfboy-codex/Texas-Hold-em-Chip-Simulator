@@ -6,6 +6,12 @@ Page({
     qrText: ''
   },
 
+  onLoad(query) {
+    if (query && query.room) {
+      this.setData({ roomCode: String(query.room).toUpperCase() });
+    }
+  },
+
   onCodeInput(e) { this.setData({ roomCode: (e.detail.value || '').toUpperCase() }); },
   onQrInput(e) { this.setData({ qrText: e.detail.value || '' }); },
 
@@ -20,7 +26,11 @@ Page({
       wx.showToast({ title: '房间不存在', icon: 'none' });
       return;
     }
-    wx.navigateTo({ url: `/pages/room-table/index?roomId=${room.id}` });
+    if (room.error === 'FULL') {
+      wx.showToast({ title: '房间已满（最多8人）', icon: 'none' });
+      return;
+    }
+    wx.redirectTo({ url: `/pages/room/index?roomId=${room.id}` });
   },
 
   onJoin() { this.doJoin(this.data.roomCode); },
