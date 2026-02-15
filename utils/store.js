@@ -36,15 +36,30 @@ function updateUserNickName(nickName) {
   return next;
 }
 
-function createRoom({ owner, initialChips, smallBlind, bigBlind }) {
+function normalizeChipConfig(chipConfig = {}) {
+  const chip10 = Math.max(0, Number(chipConfig.chip10 || 0));
+  const chip20 = Math.max(0, Number(chipConfig.chip20 || 0));
+  const chip50 = Math.max(0, Number(chipConfig.chip50 || 0));
+  return { chip10, chip20, chip50 };
+}
+
+function calcTotalChips(chipConfig) {
+  return chipConfig.chip10 * 10 + chipConfig.chip20 * 20 + chipConfig.chip50 * 50;
+}
+
+function createRoom({ owner, chipConfig, smallBlind, bigBlind }) {
   const rooms = loadRooms();
   let code = generateRoomCode();
   while (rooms[code]) code = generateRoomCode();
+
+  const normalizedChipConfig = normalizeChipConfig(chipConfig);
+  const initialChips = calcTotalChips(normalizedChipConfig);
 
   const players = [{
     ...owner,
     seat: 1,
     chips: initialChips,
+    chipStacks: { ...normalizedChipConfig },
     invested: 0,
     folded: false,
     allIn: false,
@@ -54,6 +69,7 @@ function createRoom({ owner, initialChips, smallBlind, bigBlind }) {
   const room = {
     id: code,
     ownerId: owner.id,
+    chipConfig: normalizedChipConfig,
     initialChips,
     smallBlind,
     bigBlind,
@@ -89,10 +105,13 @@ function joinRoom(roomId, user) {
   const exists = room.players.find((p) => p.id === user.id);
   if (!exists) {
     if (room.players.length >= room.maxSeats) return { error: 'FULL' };
+    const chipConfig = normalizeChipConfig(room.chipConfig);
+    const initialChips = calcTotalChips(chipConfig) || room.initialChips;
     room.players.push({
       ...user,
       seat: room.players.length + 1,
-      chips: room.initialChips,
+      chips: initialChips,
+      chipStacks: { ...chipConfig },
       invested: 0,
       folded: false,
       allIn: false,
@@ -113,7 +132,7 @@ function updatePlayerInRoom(roomId, userId, patch) {
 }
 
 function areAllPlayersReady(room) {
-  return room.players.length > 1 && room.players.every((p) => p.ready);
+  return room.players.length > 0 && room.players.every((p) => p.ready);
 }
 
 module.exports = {

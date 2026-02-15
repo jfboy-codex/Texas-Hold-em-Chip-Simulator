@@ -6,3 +6,9 @@
 .chip-anim { width: 80rpx; height: 80rpx; line-height: 80rpx; text-align: center; font-size: 52rpx; }
 .actions button { margin-right: 12rpx; }
 .winner-item { display:block; margin-bottom: 8rpx; }
+.stack-row { display: flex; gap: 8rpx; flex-wrap: wrap; margin-top: 8rpx; }
+.chip { padding: 4rpx 10rpx; border-radius: 999rpx; color: #fff; font-size: 22rpx; }
+.chip-10 { background: #f4c430; color: #222; }
+.chip-20 { background: #35b24a; }
+.chip-50 { background: #3c7df0; }
+.picked { margin: 6rpx 0 10rpx; font-size: 24rpx; color: #ddd; }
